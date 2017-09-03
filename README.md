@@ -118,6 +118,10 @@ To start the game you have created you must add the class to the Program.cs main
 Thats pretty much it. Everything else is left to your creativity. Please remember this is only using Winforms GDI+ so after around 40-50
 game objects you will start to see HEAVY frame drop. The engine comes with a SAMPLE game that anyone can see the code and learn from that.
 
+## Credits
+Kenney (https://kenney.itch.io/) - Art
+ShadowDragon / Laurence - Coder of the entire project and founder of Four Winged Studio
+
 ## LICENSE
 You are allowed to use this code for personal use only. All assets used in this project MUST not be sold they are the property of Kenney
 If you would like to use these assets commercially please purchase them at Kenneys ITCH page https://kenney.itch.io/
