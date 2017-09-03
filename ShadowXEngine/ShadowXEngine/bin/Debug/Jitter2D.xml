@@ -1,0 +1,2024 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Jitter2D</name>
+    </assembly>
+    <members>
+        <member name="M:Jitter2D.Collision.Collision.BoxBoxTest(Jitter2D.Collision.Shapes.BoxShape@,Jitter2D.LinearMath.JVector@,Jitter2D.Collision.Shapes.BoxShape@,Jitter2D.LinearMath.JVector@)">
+            <summary>
+            Discrete Box vs Box test. Very fast. No contact info. NOTE: ensure UpdateAxes is called for each BoxShape prior.
+            </summary>
+            <param name="A">BoxShape A.</param>
+            <param name="PA">BoxShape A's position.</param>
+            <param name="B">BoxShape B.</param>
+            <param name="PB">BoxShape B's position.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Jitter2D.Collision.Collision.BoxBoxTestContact(Jitter2D.Collision.Shapes.BoxShape@,Jitter2D.LinearMath.JVector@,Jitter2D.LinearMath.JMatrix@,Jitter2D.Collision.Shapes.BoxShape@,Jitter2D.LinearMath.JVector@,Jitter2D.LinearMath.JMatrix@,Jitter2D.LinearMath.JVector@,System.Single@,Jitter2D.LinearMath.JVector[]@,Jitter2D.LinearMath.JVector[]@,System.Int32@)">
+            <summary>
+            Discrete Box vs Box test. Very fast. Generates contact info. NOTE: ensure UpdateAxes is called for each BoxShape prior.
+            </summary>
+            <param name="A">BoxShape A.</param>
+            <param name="PA">BoxShape A's position.</param>
+            <param name="OA">BoxShape A's orientation.</param>
+            <param name="B">BoxShape B.</param>
+            <param name="PB">BoxShape B's position.</param>
+            <param name="OB">BoxShape B's orientation.</param>
+            <param name="normal">Normal of collision.</param>
+            <param name="t">Amount of penetration.</param>
+            <param name="CA">Contacts found on BoxShape A.</param>
+            <param name="CB">Contacts found on BoxShape B.</param>
+            <param name="NumContacts">Number of contacts found.</param>
+            <returns>True if collision exists.</returns>
+        </member>
+        <member name="M:Jitter2D.Collision.Collision.CircleCircleTest(Jitter2D.LinearMath.JVector,System.Single,Jitter2D.LinearMath.JVector,System.Single,Jitter2D.LinearMath.JVector@,Jitter2D.LinearMath.JVector@,Jitter2D.LinearMath.JVector@,System.Single@)">
+            <summary>
+            Discrete Circle vs Circle test. Very fast. Generates contact info.
+            NOTE: check distance for collisions. If negative then a collision has occurred.
+            This is done to remove all branches from this test and leave it to the user to decide when to branch.
+            </summary>
+        </member>
+        <member name="T:Jitter2D.Collision.CollisionIsland">
+            <summary>
+            Holds a list of bodies which are in contact with each other.
+            </summary>
+        </member>
+        <member name="P:Jitter2D.Collision.CollisionIsland.Bodies">
+            <summary>
+            Gets a read only list of <see cref="T:Jitter2D.Dynamics.RigidBody"/> which are in contact with each other.
+            </summary>
+        </member>
+        <member name="P:Jitter2D.Collision.CollisionIsland.Arbiter">
+            <summary>
+            Gets a read only list of <see cref="P:Jitter2D.Collision.CollisionIsland.Arbiter"/> which are involved in this island.
+            </summary>
+        </member>
+        <member name="P:Jitter2D.Collision.CollisionIsland.Constraints">
+            <summary>
+            Gets a read only list of <see cref="T:Jitter2D.Dynamics.Constraints.Constraint"/> which are involved in this island.
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Jitter2D.Collision.CollisionIsland.#ctor" -->
+        <member name="M:Jitter2D.Collision.CollisionIsland.IsActive">
+            <summary>
+            Whether the island is active or not.
+            </summary>
+            <returns>Returns true if the island is active, otherwise false.</returns>
+            <seealso cref="P:Jitter2D.Dynamics.RigidBody.IsActive"/>
+        </member>
+        <member name="M:Jitter2D.Collision.CollisionIsland.SetStatus(System.Boolean)">
+            <summary>
+            Sets the status of every body in this island to active or inactive.
+            </summary>
+            <param name="active">If true the island gets activated, if false it
+            gets deactivated. </param>
+            <seealso cref="P:Jitter2D.Dynamics.RigidBody.IsActive"/>
+        </member>
+        <member name="T:Jitter2D.Collision.CollisionDetectedHandler">
+            <summary>
+            A delegate for collision detection.
+            </summary>
+            <param name="body1">The first body colliding with the second one.</param>
+            <param name="body2">The second body colliding with the first one.</param>
+            <param name="point">The point on body in world coordinates, where collision occur.</param>
+            <param name="normal">The normal pointing from body2 to body1.</param>
+            <param name="penetration">Estimated penetration depth of the collision.</param>
+            <seealso cref="M:Jitter2D.Collision.CollisionSystem.Detect(System.Boolean)"/>
+            <seealso cref="!:CollisionSystem.Detect(RigidBody,RigidBody)"/>
+        </member>
+        <member name="T:Jitter2D.Collision.PassedBroadphaseHandler">
+            <summary>
+            A delegate to inform the user that a pair of bodies passed the broadsphase
+            system of the engine.
+            </summary>
+            <param name="body1">The first body.</param>
+            <param name="body2">The second body.</param>
+            <returns>If false is returned the collision information is dropped. The CollisionDetectedHandler
+            is never called.</returns>
+        </member>
+        <member name="T:Jitter2D.Collision.PassedNarrowphaseHandler">
+            <summary>
+            A delegate to inform the user that a pair of bodies passed the narrowphase
+            system of the engine.
+            </summary>
+            <param name="body1">The first body.</param>
+            <param name="body2">The second body.</param>
+            <returns>If false is returned the collision information is dropped. The CollisionDetectedHandler
+            is never called.</returns>
+        </member>
+        <member name="T:Jitter2D.Collision.RaycastCallback">
+            <summary>
+            A delegate for raycasting.
+            </summary>
+            <param name="body">The body for which collision with the ray is detected.</param>
+            <param name="normal">The normal of the collision.</param>
+            <param name="fraction">The fraction which gives information where at the 
+            ray the collision occured. The hitPoint is calculated by: rayStart+friction*direction.</param>
+            <returns>If false is returned the collision information is dropped.</returns>
+        </member>
+        <member name="T:Jitter2D.Collision.CollisionSystem">
+            <summary>
+            CollisionSystem. Used by the world class to detect all collisions. 
+            Can be used seperatly from the physics.
+            </summary>
+        </member>
+        <member name="T:Jitter2D.Collision.CollisionSystem.BroadphasePair">
+            <summary>
+            Helper class which holds two bodies. Mostly used
+            for multithreaded detection. (Passing this as
+            the object parameter to ThreadManager.Instance.AddTask)
+            </summary>
+            <summary>
+            Helper class which holds two bodies. Mostly used
+            for multithreaded detection. (Passing this as
+            the object parameter to ThreadManager.Instance.AddTask)
+            </summary>
+        </member>
+        <member name="F:Jitter2D.Collision.CollisionSystem.BroadphasePair.Entity1">
+            <summary>
+            The first body.
+            </summary>
+        </member>
+        <member name="F:Jitter2D.Collision.CollisionSystem.BroadphasePair.Entity2">
+            <summary>
+            The second body.
+            </summary>
+        </member>
+        <member name="F:Jitter2D.Collision.CollisionSystem.BroadphasePair.Pool">
+            <summary>
+            A resource pool of Pairs.
+            </summary>
+        </member>
+        <member name="M:Jitter2D.Collision.CollisionSystem.RemoveEntity(Jitter2D.Collision.IBroadphaseEntity)">
+            <summary>
+            Remove a body from the collision system. Removing a body from the world
+            does automatically remove it from the collision system.
+            </summary>
+            <param name="body">The body to remove.</param>
+            <returns>Returns true if the body was successfully removed, otherwise false.</returns>
+        </member>
+        <member name="M:Jitter2D.Collision.CollisionSystem.AddEntity(Jitter2D.Collision.IBroadphaseEntity)">
+            <summary>
+            Add a body to the collision system. Adding a body to the world
+            does automatically add it to the collision system.
+            </summary>
+            <param name="body">The body to remove.</param>
+        </member>
+        <member name="E:Jitter2D.Collision.CollisionSystem.PassedBroadphase">
+            <summary>
+            Gets called when the broadphase system has detected possible collisions.
+            </summary>
+        </member>
+        <member name="E:Jitter2D.Collision.CollisionSystem.PassedNarrowphase">
+            <summary>
+            Gets called when the narrowphase system has detected possible collisions.
+            </summary>
+        </member>
+        <member name="E:Jitter2D.Collision.CollisionSystem.CollisionDetected">
+            <summary>
+            Gets called when broad- and narrow phase collision were positive.
+            </summary>
+        </member>
+        <member name="M:Jitter2D.Collision.CollisionSystem.#ctor">
+            <summary>
+            Initializes a new instance of the CollisionSystem.
+            </summary>
+        </member>
+        <member name="M:Jitter2D.Collision.CollisionSystem.Detect(Jitter2D.Collision.IBroadphaseEntity,Jitter2D.Collision.IBroadphaseEntity)">
+            <summary>
+            Checks two bodies for collisions using narrowphase.
+            </summary>
+            <param name="body1">The first body.</param>
+            <param name="body2">The second body.</param>
+        </member>
+        <member name="M:Jitter2D.Collision.CollisionSystem.Raycast(Jitter2D.LinearMath.JVector,Jitter2D.LinearMath.JVector,Jitter2D.Collision.RaycastCallback,Jitter2D.Dynamics.RigidBody@,Jitter2D.LinearMath.JVector@,System.Single@)">
+            <summary>
+            Sends a ray (definied by start and direction) through the scene (all bodies added).
+            NOTE: For performance reasons terrain and trianglemeshshape aren't checked
+            against rays (rays are of infinite length). They are checked against segments
+            which start at rayOrigin and end in rayOrigin + rayDirection.
+            </summary>
+        </member>
+        <member name="M:Jitter2D.Collision.CollisionSystem.Raycast(Jitter2D.Dynamics.RigidBody,Jitter2D.LinearMath.JVector,Jitter2D.LinearMath.JVector,Jitter2D.LinearMath.JVector@,System.Single@)">
+            <summary>
+            Raycasts a single body. NOTE: For performance reasons terrain and trianglemeshshape aren't checked
+            against rays (rays are of infinite length). They are checked against segments
+            which start at rayOrigin and end in rayOrigin + rayDirection.
+            </summary>
+        </member>
+        <member name="M:Jitter2D.Collision.CollisionSystem.CheckBothStaticOrInactive(Jitter2D.Collision.IBroadphaseEntity,Jitter2D.Collision.IBroadphaseEntity)">
+            <summary>
+            Checks the state of two bodies.
+            </summary>
+            <param name="entity1">The first body.</param>
+            <param name="entity2">The second body.</param>
+            <returns>Returns true if both are static or inactive.</returns>
+        </member>
+        <member name="M:Jitter2D.Collision.CollisionSystem.CheckBoundingBoxes(Jitter2D.Collision.IBroadphaseEntity,Jitter2D.Collision.IBroadphaseEntity)">
+            <summary>
+            Checks the AABB of the two rigid bodies.
+            </summary>
+            <param name="entity1">The first body.</param>
+            <param name="entity2">The second body.</param>
+            <returns>Returns true if an intersection occours.</returns>
+        </member>
+        <member name="M:Jitter2D.Collision.CollisionSystem.RaisePassedBroadphase(Jitter2D.Collision.IBroadphaseEntity,Jitter2D.Collision.IBroadphaseEntity)">
+            <summary>
+            Raises the PassedBroadphase event.
+            </summary>
+            <param name="entity1">The first body.</param>
+            <param name="entity2">The second body.</param>
+            <returns>Returns false if the collision information
+            should be dropped</returns>
+        </member>
+        <member name="M:Jitter2D.Collision.CollisionSystem.RaisePassedNarrowphase(Jitter2D.Dynamics.RigidBody,Jitter2D.Dynamics.RigidBody,Jitter2D.LinearMath.JVector@,Jitter2D.LinearMath.JVector@,System.Single)">
+            <summary>
+            Raises the PassedNarrowphase event.
+            </summary>
+            <param name="body1">The first body.</param>
+            <param name="body2">The second body.</param>
+            <returns>Returns false if the collision information
+            should be dropped</returns>
+        </member>
+        <member name="M:Jitter2D.Collision.CollisionSystem.RaiseCollisionDetected(Jitter2D.Dynamics.RigidBody,Jitter2D.Dynamics.RigidBody,Jitter2D.LinearMath.JVector@,Jitter2D.LinearMath.JVector@,Jitter2D.LinearMath.JVector@,System.Single)">
+            <summary>
+            Raises the CollisionDetected event.
+            </summary>
+            <param name="body1">The first body involved in the collision.</param>
+            <param name="body2">The second body involved in the collision.</param>
+            <param name="point">The collision point.</param>
+            <param name="normal">The normal pointing to body1.</param>
+            <param name="penetration">The penetration depth.</param>
+        </member>
+        <member name="M:Jitter2D.Collision.CollisionSystem.Detect(System.Boolean)">
+            <summary>
+            Tells the collisionsystem to check all bodies for collisions. Hook into the <see cref="E:Jitter2D.Collision.CollisionSystem.PassedBroadphase"/>
+            and <see cref="E:Jitter2D.Collision.CollisionSystem.CollisionDetected"/> events to get the results.
+            </summary>
+            <param name="multiThreaded">If true internal multithreading is used.</param>
+        </member>
+        <member name="M:Jitter2D.Collision.CollisionSystem.Query(System.Func{Jitter2D.Collision.IBroadphaseEntity,System.Boolean},Jitter2D.LinearMath.JBBox@)">
+            <summary>
+            Query a bounding box for overlapping shapes.
+            </summary>
+            <param name="callback"></param>
+            <param name="box"></param>
+        </member>
+        <member name="T:Jitter2D.Collision.CollisionSystemPersistentSAP">
+            <summary>
+            Full 3-Axis SweepAndPrune using persistent updates.
+            </summary>
+        </member>
+        <member name="M:Jitter2D.Collision.CollisionSystemPersistentSAP.OverlapPair.#ctor(Jitter2D.Collision.IBroadphaseEntity,Jitter2D.Collision.IBroadphaseEntity)">
+            <summary>
+            Initializes a new instance of the BodyPair class.
+            </summary>
+            <param name="entity1"></param>
+            <param name="entity2"></param>
+        </member>
+        <member name="M:Jitter2D.Collision.CollisionSystemPersistentSAP.OverlapPair.SetBodies(Jitter2D.Collision.IBroadphaseEntity,Jitter2D.Collision.IBroadphaseEntity)">
+            <summary>
+            Don't call this, while the key is used in the arbitermap.
+            It changes the hashcode of this object.
+            </summary>
+            <param name="entity1">The first body.</param>
+            <param name="entity2">The second body.</param>
+        </member>
+        <member name="M:Jitter2D.Collision.CollisionSystemPersistentSAP.OverlapPair.Equals(System.Object)">
+            <summary>
+            Checks if two objects are equal.
+            </summary>
+            <param name="obj">The object to check against.</param>
+            <returns>Returns true if they are equal, otherwise false.</returns>
+        </member>
+        <member name="M:Jitter2D.Collision.CollisionSystemPersistentSAP.OverlapPair.GetHashCode">
+            <summary>
+            Returns the hashcode of the BodyPair.
+            The hashcode is the same if an BodyPair contains the same bodies.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Jitter2D.Collision.CollisionSystemPersistentSAP.Detect(System.Boolean)">
+            <summary>
+            Tells the collisionsystem to check all bodies for collisions. Hook into the
+            <see cref="E:Jitter2D.Collision.CollisionSystem.PassedBroadphase"/>
+            and <see cref="E:Jitter2D.Collision.CollisionSystem.CollisionDetected"/> events to get the results.
+            </summary>
+            <param name="multiThreaded">If true internal multithreading is used.</param>
+        </member>
+        <member name="M:Jitter2D.Collision.CollisionSystemPersistentSAP.Raycast(Jitter2D.LinearMath.JVector,Jitter2D.LinearMath.JVector,Jitter2D.Collision.RaycastCallback,Jitter2D.Dynamics.RigidBody@,Jitter2D.LinearMath.JVector@,System.Single@)">
+            <summary>
+            Sends a ray (definied by start and direction) through the scene (all bodies added).
+            NOTE: For performance reasons terrain and trianglemeshshape aren't checked
+            against rays (rays are of infinite length). They are checked against segments
+            which start at rayOrigin and end in rayOrigin + rayDirection.
+            </summary>
+        </member>
+        <member name="M:Jitter2D.Collision.CollisionSystemPersistentSAP.Raycast(Jitter2D.Dynamics.RigidBody,Jitter2D.LinearMath.JVector,Jitter2D.LinearMath.JVector,Jitter2D.LinearMath.JVector@,System.Single@)">
+            <summary>
+            Raycasts a single body. NOTE: For performance reasons terrain and trianglemeshshape aren't checked
+            against rays (rays are of infinite length). They are checked against segments
+            which start at rayOrigin and end in rayOrigin + rayDirection.
+            </summary>
+        </member>
+        <member name="T:Jitter2D.Collision.IslandManager">
+            <summary>
+            bodies have: connections - bodies they are connected with (via constraints or arbiters)
+                         arbiters    - all arbiters they are involved
+                         constraints - all constraints they are involved
+                         
+            static bodies dont have any connections. Think of the islands as a graph:
+            nodes are the bodies, and edges are the connections
+            </summary>
+        </member>
+        <member name="T:Jitter2D.Collision.ISupportMappable">
+            <summary>
+            The implementation of the ISupportMappable interface defines the form
+            of a shape. <seealso cref="!:GJKCollide"/> <seealso cref="!:XenoCollide"/>
+            </summary>
+        </member>
+        <member name="M:Jitter2D.Collision.ISupportMappable.SupportMapping(Jitter2D.LinearMath.JVector@,Jitter2D.LinearMath.JVector@)">
+            <summary>
+            SupportMapping. Finds the point in the shape furthest away from the given direction.
+            Imagine a plane with a normal in the search direction. Now move the plane along the normal
+            until the plane does not intersect the shape. The last intersection point is the result.
+            </summary>
+            <param name="direction">The direction.</param>
+            <param name="result">The result.</param>
+        </member>
+        <member name="M:Jitter2D.Collision.ISupportMappable.SupportCenter(Jitter2D.LinearMath.JVector@)">
+            <summary>
+            The center of the SupportMap.
+            </summary>
+            <param name="center"></param>
+        </member>
+        <member name="T:Jitter2D.Collision.Shapes.BoxShape">
+            <summary>
+            A <see cref="T:Jitter2D.Collision.Shapes.Shape"/> representing a box.
+            </summary>
+        </member>
+        <member name="P:Jitter2D.Collision.Shapes.BoxShape.Size">
+            <summary>
+            The side length of the box.
+            </summary>
+        </member>
+        <member name="M:Jitter2D.Collision.Shapes.BoxShape.#ctor(Jitter2D.LinearMath.JVector)">
+            <summary>
+            Creates a new instance of the BoxShape class.
+            </summary>
+            <param name="size">The size of the box.</param>
+        </member>
+        <member name="M:Jitter2D.Collision.Shapes.BoxShape.#ctor(System.Single,System.Single)">
+            <summary>
+            Creates a new instance of the BoxShape class.
+            </summary>
+            <param name="length">The width of the box.</param>
+            <param name="height">The height of the box.</param>
+        </member>
+        <member name="M:Jitter2D.Collision.Shapes.BoxShape.PointInsideLocal(Jitter2D.LinearMath.JVector)">
+            <summary>
+            Returns true if the point is inside the box's local space.
+            </summary>
+            <param name="point">The point.</param>
+            <returns>True if the point is inside the box.</returns>
+        </member>
+        <member name="M:Jitter2D.Collision.Shapes.BoxShape.PointInsideWorld(Jitter2D.LinearMath.JVector,Jitter2D.LinearMath.JVector,Jitter2D.LinearMath.JMatrix)">
+            <summary>
+            Should return true if the point is inside the box's world space.
+            </summary>
+            <param name="point">The point.</param>
+            <param name="position">World position of box.</param>
+            <param name="orientation">World orientation of box.</param>
+            <returns>True if the point is inside the shape.</returns>
+        </member>
+        <member name="M:Jitter2D.Collision.Shapes.BoxShape.UpdateShape">
+            <summary>
+            This method uses the <see cref="T:Jitter2D.Collision.ISupportMappable"/> implementation
+            to calculate the local bounding box, the mass, geometric center and 
+            the inertia of the shape. In custom shapes this method should be overidden
+            to compute this values faster.
+            </summary>
+        </member>
+        <member name="M:Jitter2D.Collision.Shapes.BoxShape.GetBoundingBox(System.Single@,Jitter2D.LinearMath.JBBox@)">
+            <summary>
+            Gets the axis aligned bounding box of the orientated shape.
+            </summary>
+            <param name="orientation">The orientation of the shape.</param>
+            <param name="box">The axis aligned bounding box of the shape.</param>
+        </member>
+        <member name="M:Jitter2D.Collision.Shapes.BoxShape.CalculateMassInertia">
+            <summary>
+            This method uses the <see cref="T:Jitter2D.Collision.ISupportMappable"/> implementation
+            to calculate the local bounding box, the mass, geometric center and 
+            the inertia of the shape. In custom shapes this method should be overidden
+            to compute this values faster.
+            </summary>
+        </member>
+        <member name="M:Jitter2D.Collision.Shapes.BoxShape.SupportMapping(Jitter2D.LinearMath.JVector@,Jitter2D.LinearMath.JVector@)">
+            <summary>
+            SupportMapping. Finds the point in the shape furthest away from the given direction.
+            Imagine a plane with a normal in the search direction. Now move the plane along the normal
+            until the plane does not intersect the shape. The last intersection point is the result.
+            </summary>
+            <param name="direction">The direction.</param>
+            <param name="result">The result.</param>
+        </member>
+        <member name="M:Jitter2D.Collision.Shapes.BoxShape.FindSupportPoints(Jitter2D.LinearMath.JVector@,Jitter2D.LinearMath.JVector@,Jitter2D.LinearMath.JMatrix@,Jitter2D.LinearMath.JVector[]@)">
+            <summary>
+            Gets up to two supports points if the given direction is within a tolerance of being parallel to the normal of the edge formed by the supports. Otherwise it just returns a single support.
+            </summary>
+        </member>
+        <member name="T:Jitter2D.Collision.Shapes.CircleShape">
+            <summary>
+            A <see cref="T:Jitter2D.Collision.Shapes.Shape"/> representing a sphere.
+            </summary>
+        </member>
+        <member name="P:Jitter2D.Collision.Shapes.CircleShape.Radius">
+            <summary>
+            The radius of the sphere.
+            </summary>
+        </member>
+        <member name="M:Jitter2D.Collision.Shapes.CircleShape.#ctor(System.Single)">
+            <summary>
+            Creates a new instance of the SphereShape class.
+            </summary>
+            <param name="radius">The radius of the sphere</param>
+        </member>
+        <member name="M:Jitter2D.Collision.Shapes.CircleShape.PointInsideLocal(Jitter2D.LinearMath.JVector)">
+            <summary>
+            Returns true if the point is inside the circle.
+            </summary>
+            <param name="point">The point.</param>
+            <returns>True if the point is inside the circle.</returns>
+        </member>
+        <member name="M:Jitter2D.Collision.Shapes.CircleShape.PointInsideWorld(Jitter2D.LinearMath.JVector,Jitter2D.LinearMath.JVector,Jitter2D.LinearMath.JMatrix)">
+            <summary>
+            Should return true if the point is inside the circles world space.
+            </summary>
+            <param name="point">The point.</param>
+            <param name="position">World position of circle.</param>
+            <param name="orientation">World orientation of circle.</param>
+            <returns>True if the point is inside the shape.</returns>
+        </member>
+        <member name="M:Jitter2D.Collision.Shapes.CircleShape.SupportMapping(Jitter2D.LinearMath.JVector@,Jitter2D.LinearMath.JVector@)">
+            <summary>
+            SupportMapping. Finds the point in the shape furthest away from the given direction.
+            Imagine a plane with a normal in the search direction. Now move the plane along the normal
+            until the plane does not intersect the shape. The last intersection point is the result.
+            </summary>
+            <param name="direction">The direction.</param>
+            <param name="result">The result.</param>
+        </member>
+        <member name="M:Jitter2D.Collision.Shapes.CircleShape.GetBoundingBox(System.Single@,Jitter2D.LinearMath.JBBox@)">
+            <summary>
+            Calculates the bounding box of the sphere.
+            </summary>
+            <param name="orientation">The orientation of the shape.</param>
+            <param name="box">The resulting axis aligned bounding box.</param>
+        </member>
+        <member name="M:Jitter2D.Collision.Shapes.CircleShape.CalculateMassInertia">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Jitter2D.Collision.Shapes.ShapeUpdatedHandler">
+            <summary>
+            Gets called when a shape changes one of the parameters.
+            For example the size of a box is changed.
+            </summary>
+        </member>
+        <member name="T:Jitter2D.Collision.Shapes.Shape">
+            <summary>
+            Represents the collision part of the RigidBody. A shape is mainly defined through it's supportmap.
+            Shapes represent convex objects. Inherited classes have to overwrite the supportmap function.
+            To implement you own shape: derive a class from <see cref="T:Jitter2D.Collision.Shapes.Shape"/>, implement the support map function
+            and call 'UpdateShape' within the constructor. GeometricCenter, Mass, BoundingBox and Inertia is calculated numerically
+            based on your SupportMap implementation.
+            </summary>
+        </member>
+        <member name="E:Jitter2D.Collision.Shapes.Shape.ShapeUpdated">
+            <summary>
+            Gets called when the shape changes one of the parameters.
+            </summary>
+        </member>
+        <member name="M:Jitter2D.Collision.Shapes.Shape.#ctor">
+            <summary>
+            Creates a new instance of a shape.
+            </summary>
+        </member>
+        <member name="P:Jitter2D.Collision.Shapes.Shape.Inertia">
+            <summary>
+            Returns the inertia of the untransformed shape.
+            </summary>
+        </member>
+        <member name="P:Jitter2D.Collision.Shapes.Shape.Density">
+            <summary>
+            Gets or sets the density.
+            </summary>
+            <value>The density.</value>
+        </member>
+        <member name="P:Jitter2D.Collision.Shapes.Shape.Mass">
+            <summary>
+            Gets the mass of the shape. This is the volume. (density = 1)
+            </summary>
+        </member>
+        <member name="M:Jitter2D.Collision.Shapes.Shape.PointInsideLocal(Jitter2D.LinearMath.JVector)">
+            <summary>
+            Should return true if the point is inside the shapes local space.
+            </summary>
+            <param name="point">The point.</param>
+            <returns>True if the point is inside the shape.</returns>
+        </member>
+        <member name="M:Jitter2D.Collision.Shapes.Shape.PointInsideWorld(Jitter2D.LinearMath.JVector,Jitter2D.LinearMath.JVector,Jitter2D.LinearMath.JMatrix)">
+            <summary>
+            Should return true if the point is inside the shapes world space.
+            </summary>
+            <param name="point">The point.</param>
+            <param name="position">World position of shape.</param>
+            <param name="orientation">World orientation of shape.</param>
+            <returns>True if the point is inside the shape.</returns>
+        </member>
+        <member name="M:Jitter2D.Collision.Shapes.Shape.RaiseShapeUpdated">
+            <summary>
+            Informs all listener that the shape changed.
+            </summary>
+        </member>
+        <member name="P:Jitter2D.Collision.Shapes.Shape.BoundingBox">
+            <summary>
+            The untransformed axis aligned bounding box of the shape.
+            </summary>
+        </member>
+        <member name="M:Jitter2D.Collision.Shapes.Shape.GetBoundingBox(System.Single@,Jitter2D.LinearMath.JBBox@)">
+            <summary>
+            Uses the supportMapping to calculate the bounding box. Should be overidden
+            to make this faster.
+            </summary>
+            <param name="orientation">The orientation of the shape.</param>
+            <param name="box">The resulting axis aligned bounding box.</param>
+        </member>
+        <member name="M:Jitter2D.Collision.Shapes.Shape.UpdateShape">
+            <summary>
+            This method uses the <see cref="T:Jitter2D.Collision.ISupportMappable"/> implementation
+            to calculate the local bounding box, the mass, geometric center and 
+            the inertia of the shape. In custom shapes this method should be overidden
+            to compute this values faster.
+            </summary>
+        </member>
+        <member name="M:Jitter2D.Collision.Shapes.Shape.CalculateMassInertia">
+            <summary>
+            Numerically calculates the inertia, mass and geometric center of the shape.
+            This gets a good value for "normal" shapes. The algorithm isn't very accurate
+            for very flat shapes. 
+            </summary>
+        </member>
+        <member name="M:Jitter2D.Collision.Shapes.Shape.SupportMapping(Jitter2D.LinearMath.JVector@,Jitter2D.LinearMath.JVector@)">
+            <summary>
+            SupportMapping. Finds the point in the shape furthest away from the given direction.
+            Imagine a plane with a normal in the search direction. Now move the plane along the normal
+            until the plane does not intersect the shape. The last intersection point is the result.
+            </summary>
+            <param name="direction">The direction.</param>
+            <param name="result">The result.</param>
+        </member>
+        <member name="M:Jitter2D.Collision.Shapes.Shape.SupportCenter(Jitter2D.LinearMath.JVector@)">
+            <summary>
+            The center of the SupportMap.
+            </summary>
+            <param name="geomCenter">The center of the SupportMap.</param>
+        </member>
+        <member name="P:Jitter2D.Dynamics.Constraints.IConstraint.Body2">
+            <summary>
+            Gets the second body. Can be null.
+            </summary>
+        </member>
+        <member name="T:Jitter2D.Dynamics.Constraints.Constraint">
+            <summary>
+            A constraints forces a body to behave in a specific way.
+            </summary>
+        </member>
+        <member name="P:Jitter2D.Dynamics.Constraints.Constraint.Body1">
+            <summary>
+            Gets the first body. Can be null.
+            </summary>
+        </member>
+        <member name="P:Jitter2D.Dynamics.Constraints.Constraint.Body2">
+            <summary>
+            Gets the second body. Can be null.
+            </summary>
+        </member>
+        <member name="M:Jitter2D.Dynamics.Constraints.Constraint.#ctor(Jitter2D.Dynamics.RigidBody,Jitter2D.Dynamics.RigidBody)">
+            <summary>
+            Constructor.
+            </summary>
+            <param name="body1">The first body which should get constrained. Can be null.</param>
+            <param name="body2">The second body which should get constrained. Can be null.</param>
+        </member>
+        <member name="M:Jitter2D.Dynamics.Constraints.Constraint.PrepareForIteration(System.Single)">
+            <summary>
+            Called once before iteration starts.
+            </summary>
+            <param name="timestep">The simulation timestep</param>
+        </member>
+        <member name="M:Jitter2D.Dynamics.Constraints.Constraint.Iterate">
+            <summary>
+            Iteratively solve this constraint.
+            </summary>
+        </member>
+        <member name="T:Jitter2D.Dynamics.ContactList">
+            <summary>
+            Represents a list of contacts. Every ContactList 
+            has a maximum of four contacts.
+            </summary>
+        </member>
+        <member name="T:Jitter2D.Dynamics.Arbiter">
+            <summary>
+            An arbiter holds all contact information of two bodies.
+            The contacts are stored in the ContactList. There is a maximum
+            of four contacts which can be added to an arbiter. The arbiter
+            only keeps the best four contacts based on the area spanned by
+            the contact points.
+            </summary>
+        </member>
+        <member name="P:Jitter2D.Dynamics.Arbiter.Body1">
+            <summary>
+            The first body.
+            </summary>
+        </member>
+        <member name="P:Jitter2D.Dynamics.Arbiter.Body2">
+            <summary>
+            The second body.
+            </summary>
+        </member>
+        <member name="P:Jitter2D.Dynamics.Arbiter.ContactList">
+            <summary>
+            The contact list containing all contacts of both bodies.
+            </summary>
+        </member>
+        <member name="F:Jitter2D.Dynamics.Arbiter.Pool">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:Jitter2D.Dynamics.Arbiter.#ctor(Jitter2D.Dynamics.RigidBody,Jitter2D.Dynamics.RigidBody)">
+            <summary>
+            </summary>
+            <param name="body1"></param>
+            <param name="body2"></param>
+        </member>
+        <member name="M:Jitter2D.Dynamics.Arbiter.#ctor">
+            <summary>
+            Initializes a new instance of the Arbiter class.
+            </summary>
+        </member>
+        <member name="M:Jitter2D.Dynamics.Arbiter.Invalidate">
+            <summary>
+            Removes all contacts from this arbiter.
+            The world will remove the arbiter automatically next frame
+            or add new contacts.
+            </summary>
+        </member>
+        <member name="M:Jitter2D.Dynamics.Arbiter.AddContact(Jitter2D.LinearMath.JVector,Jitter2D.LinearMath.JVector,Jitter2D.LinearMath.JVector,System.Single,Jitter2D.Dynamics.ContactSettings)">
+            <summary>
+            Adds a contact to the arbiter (threadsafe). No more than four contacts 
+            are stored in the contactList. When adding a new contact
+            to the arbiter the existing are checked and the best are kept.
+            </summary>
+            <param name="point1">Point on body1. In world space.</param>
+            <param name="point2">Point on body2. In world space.</param>
+            <param name="normal">The normal pointing to body2.</param>
+            <param name="penetration">The estimated penetration depth.</param>
+        </member>
+        <member name="T:Jitter2D.Dynamics.ArbiterKey">
+            <summary>
+            For easy access, Arbiters are stored in a Hashtable(ArbiterMap). 
+            To find the Arbiter fortwo RigidBodies, build an ArbiterKey for the two bodies
+            and use it as the lookup key for the ArbiterMap.
+            </summary>
+        </member>
+        <member name="M:Jitter2D.Dynamics.ArbiterKey.#ctor(Jitter2D.Dynamics.RigidBody,Jitter2D.Dynamics.RigidBody)">
+            <summary>
+            Initializes a new instance of the ArbiterKey class.
+            </summary>
+            <param name="body1"></param>
+            <param name="body2"></param>
+        </member>
+        <member name="M:Jitter2D.Dynamics.ArbiterKey.SetBodies(Jitter2D.Dynamics.RigidBody,Jitter2D.Dynamics.RigidBody)">
+            <summary>
+            Don't call this, while the key is used in the arbitermap.
+            It changes the hashcode of this object.
+            </summary>
+            <param name="body1">The first body.</param>
+            <param name="body2">The second body.</param>
+        </member>
+        <member name="M:Jitter2D.Dynamics.ArbiterKey.Equals(System.Object)">
+            <summary>
+            Checks if two objects are equal.
+            </summary>
+            <param name="obj">The object to check against.</param>
+            <returns>Returns true if they are equal, otherwise false.</returns>
+        </member>
+        <member name="M:Jitter2D.Dynamics.ArbiterKey.GetHashCode">
+            <summary>
+            Returns the hashcode of the ArbiterKey.
+            The hashcode is the same if an ArbiterKey contains the same bodies.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Jitter2D.Dynamics.ArbiterMap">
+            <summary>
+            The ArbiterMap is a dictionary which stores all arbiters.
+            </summary>
+        </member>
+        <member name="M:Jitter2D.Dynamics.ArbiterMap.#ctor">
+            <summary>
+            Initializes a new instance of the ArbiterMap class.
+            </summary>
+        </member>
+        <member name="M:Jitter2D.Dynamics.ArbiterMap.LookUpArbiter(Jitter2D.Dynamics.RigidBody,Jitter2D.Dynamics.RigidBody,Jitter2D.Dynamics.Arbiter@)">
+            <summary>
+            Gets an arbiter by it's bodies. Not threadsafe.
+            </summary>
+            <param name="body1">The first body.</param>
+            <param name="body2">The second body.</param>
+            <param name="arbiter">The arbiter which was found.</param>
+            <returns>Returns true if the arbiter could be found, otherwise false.</returns>
+        </member>
+        <member name="M:Jitter2D.Dynamics.ArbiterMap.ContainsArbiter(Jitter2D.Dynamics.RigidBody,Jitter2D.Dynamics.RigidBody)">
+            <summary>
+            Checks if an arbiter is within the arbiter map.
+            </summary>
+            <param name="body1">The first body.</param>
+            <param name="body2">The second body.</param>
+            <returns>Returns true if the arbiter could be found, otherwise false.</returns>
+        </member>
+        <member name="T:Jitter2D.Dynamics.Contact">
+            <summary>
+            </summary>
+        </member>
+        <member name="F:Jitter2D.Dynamics.Contact.Pool">
+            <summary>
+            A contact resource pool.
+            </summary>
+        </member>
+        <member name="P:Jitter2D.Dynamics.Contact.Body1">
+            <summary>
+            The first body involved in the contact.
+            </summary>
+        </member>
+        <member name="P:Jitter2D.Dynamics.Contact.Body2">
+            <summary>
+            The second body involved in the contact.
+            </summary>
+        </member>
+        <member name="P:Jitter2D.Dynamics.Contact.Penetration">
+            <summary>
+            The penetration of the contact.
+            </summary>
+        </member>
+        <member name="P:Jitter2D.Dynamics.Contact.Position1">
+            <summary>
+            The collision position in world space of body1.
+            </summary>
+        </member>
+        <member name="P:Jitter2D.Dynamics.Contact.Position2">
+            <summary>
+            The collision position in world space of body2.
+            </summary>
+        </member>
+        <member name="P:Jitter2D.Dynamics.Contact.Tangent">
+            <summary>
+            The contact tangent.
+            </summary>
+        </member>
+        <member name="P:Jitter2D.Dynamics.Contact.Normal">
+            <summary>
+            The contact normal.
+            </summary>
+        </member>
+        <member name="M:Jitter2D.Dynamics.Contact.CalculateRelativeVelocity">
+            <summary>
+            Calculates relative velocity of body contact points on the bodies.
+            </summary>
+            <param name="relVel">The relative velocity of body contact points on the bodies.</param>
+        </member>
+        <member name="M:Jitter2D.Dynamics.Contact.Iterate">
+            <summary>
+            Solves the contact iteratively.
+            </summary>
+        </member>
+        <member name="M:Jitter2D.Dynamics.Contact.UpdatePosition">
+            <summary>
+            The points in world space gets recalculated by transforming the
+            local coordinates. Also new penetration depth is estimated.
+            </summary>
+        </member>
+        <member name="M:Jitter2D.Dynamics.Contact.ApplyImpulse(Jitter2D.LinearMath.JVector@)">
+            <summary>
+            An impulse is applied an both contact points.
+            </summary>
+            <param name="impulse">The impulse to apply.</param>
+        </member>
+        <member name="M:Jitter2D.Dynamics.Contact.PrepareForIteration(System.Single)">
+            <summary>
+            PrepareForIteration has to be called before <see cref="M:Jitter2D.Dynamics.Contact.Iterate"/>.
+            </summary>
+            <param name="timestep">The timestep of the simulation.</param>
+        </member>
+        <member name="M:Jitter2D.Dynamics.Contact.Initialize(Jitter2D.Dynamics.RigidBody,Jitter2D.Dynamics.RigidBody,Jitter2D.LinearMath.JVector@,Jitter2D.LinearMath.JVector@,Jitter2D.LinearMath.JVector@,System.Single,System.Boolean,Jitter2D.Dynamics.ContactSettings)">
+            <summary>
+            Initializes a contact.
+            </summary>
+            <param name="body1">The first body.</param>
+            <param name="body2">The second body.</param>
+            <param name="point1">The collision point in worldspace</param>
+            <param name="point2">The collision point in worldspace</param>
+            <param name="n">The normal pointing to body2.</param>
+            <param name="penetration">The estimated penetration depth.</param>
+        </member>
+        <member name="T:Jitter2D.Dynamics.Joints.Joint">
+            <summary>
+            A joint is a collection of internally handled constraints.
+            </summary>
+        </member>
+        <member name="P:Jitter2D.Dynamics.Joints.Joint.World">
+            <summary>
+            The world class to which the internal constraints
+            should be added.
+            </summary>
+        </member>
+        <member name="M:Jitter2D.Dynamics.Joints.Joint.#ctor(Jitter2D.World)">
+            <summary>
+            Creates a new instance of the Joint class.
+            </summary>
+            <param name="world">The world class to which the internal constraints
+            should be added.</param>
+        </member>
+        <member name="M:Jitter2D.Dynamics.Joints.Joint.Activate">
+            <summary>
+            Adds the internal constraints of this joint to the world class.
+            </summary>
+        </member>
+        <member name="M:Jitter2D.Dynamics.Joints.Joint.Deactivate">
+            <summary>
+            Removes the internal constraints of this joint from the world class.
+            </summary>
+        </member>
+        <member name="T:Jitter2D.Dynamics.RigidBody">
+            <summary>
+            The RigidBody class.
+            </summary>
+        </member>
+        <member name="P:Jitter2D.Dynamics.RigidBody.IsParticle">
+            <summary>
+            If true, the body as no angular movement.
+            </summary>
+        </member>
+        <member name="M:Jitter2D.Dynamics.RigidBody.#ctor(Jitter2D.Collision.Shapes.Shape,Jitter2D.Dynamics.Material)">
+            <summary>
+            Initializes a new instance of the RigidBody class.
+            </summary>
+            <param name="shape">The shape of the body.</param>
+        </member>
+        <member name="M:Jitter2D.Dynamics.RigidBody.#ctor(Jitter2D.Collision.Shapes.Shape,Jitter2D.Dynamics.Material,System.Boolean)">
+            <summary>
+            Initializes a new instance of the RigidBody class.
+            </summary>
+            <param name="shape">The shape of the body.</param>
+            <param name="isParticle">If set to true the body doesn't rotate. 
+            Also contacts are only solved for the linear motion part.</param>
+        </member>
+        <member name="M:Jitter2D.Dynamics.RigidBody.GetHashCode">
+            <summary>
+            Calculates a hashcode for this RigidBody.
+            The hashcode should be unique as possible
+            for every body.
+            </summary>
+            <returns>The hashcode.</returns>
+        </member>
+        <member name="P:Jitter2D.Dynamics.RigidBody.AllowDeactivation">
+            <summary>
+            If set to false the body will never be deactivated by the
+            world.
+            </summary>
+        </member>
+        <member name="P:Jitter2D.Dynamics.RigidBody.BoundingBox">
+            <summary>
+            The axis aligned bounding box of the body.
+            </summary>
+        </member>
+        <member name="P:Jitter2D.Dynamics.RigidBody.CollisionIsland">
+            <summary>
+            Gets the current collision island the body is in.
+            </summary>
+        </member>
+        <member name="P:Jitter2D.Dynamics.RigidBody.IsActive">
+            <summary>
+            If set to false the velocity is set to zero,
+            the body gets immediately freezed.
+            </summary>
+        </member>
+        <member name="M:Jitter2D.Dynamics.RigidBody.ApplyImpulse(Jitter2D.LinearMath.JVector)">
+            <summary>
+            Applies an impulse on the center of the body. Changing
+            linear velocity.
+            </summary>
+            <param name="impulse">Impulse direction and magnitude.</param>
+        </member>
+        <member name="M:Jitter2D.Dynamics.RigidBody.ApplyImpulse(Jitter2D.LinearMath.JVector,Jitter2D.LinearMath.JVector)">
+            <summary>
+            Applies an impulse on the specific position. Changing linear
+            and angular velocity.
+            </summary>
+            <param name="impulse">Impulse direction and magnitude.</param>
+            <param name="relativePosition">The position where the impulse gets applied
+            in Body coordinate frame.</param>
+        </member>
+        <member name="M:Jitter2D.Dynamics.RigidBody.AddForce(Jitter2D.LinearMath.JVector)">
+            <summary>
+            Adds a force to the center of the body. The force gets applied
+            the next time <see cref="M:Jitter2D.World.Step(System.Single,System.Boolean)"/> is called. The 'impact'
+            of the force depends on the time it is applied to a body - so
+            the timestep influences the energy added to the body.
+            </summary>
+            <param name="force">The force to add next <see cref="M:Jitter2D.World.Step(System.Single,System.Boolean)"/>.</param>
+        </member>
+        <member name="M:Jitter2D.Dynamics.RigidBody.AddForce(Jitter2D.LinearMath.JVector,Jitter2D.LinearMath.JVector)">
+            <summary>
+            Adds a force to the center of the body. The force gets applied
+            the next time <see cref="M:Jitter2D.World.Step(System.Single,System.Boolean)"/> is called. The 'impact'
+            of the force depends on the time it is applied to a body - so
+            the timestep influences the energy added to the body.
+            </summary>
+            <param name="force">The force to add next <see cref="M:Jitter2D.World.Step(System.Single,System.Boolean)"/>.</param>
+            <param name="pos">The position where the force is applied.</param>
+        </member>
+        <member name="P:Jitter2D.Dynamics.RigidBody.Torque">
+            <summary>
+            Returns the torque which acts this timestep on the body.
+            </summary>
+        </member>
+        <member name="P:Jitter2D.Dynamics.RigidBody.Force">
+            <summary>
+            Returns the force which acts this timestep on the body.
+            </summary>
+        </member>
+        <member name="M:Jitter2D.Dynamics.RigidBody.AddTorque(System.Single)">
+            <summary>
+            Adds torque to the body. The torque gets applied
+            the next time <see cref="M:Jitter2D.World.Step(System.Single,System.Boolean)"/> is called. The 'impact'
+            of the torque depends on the time it is applied to a body - so
+            the timestep influences the energy added to the body.
+            </summary>
+            <param name="torque">The torque to add next <see cref="M:Jitter2D.World.Step(System.Single,System.Boolean)"/>.</param>
+        </member>
+        <member name="M:Jitter2D.Dynamics.RigidBody.SetMassProperties">
+            <summary>
+            By calling this method the shape inertia and mass is used.
+            </summary>
+        </member>
+        <member name="M:Jitter2D.Dynamics.RigidBody.SetMassProperties(System.Single,System.Single,System.Boolean)">
+            <summary>
+            The engine used the given values for inertia and mass and ignores
+            the shape mass properties.
+            </summary>
+            <param name="inertia">The inertia/inverse inertia of the untransformed object.</param>
+            <param name="mass">The mass/inverse mass of the object.</param>
+            <param name="setAsInverseValues">Sets the InverseInertia and the InverseMass
+            to this values.</param>
+        </member>
+        <member name="P:Jitter2D.Dynamics.RigidBody.Tag">
+            <summary>
+            Allows to set a user defined value to the body.
+            </summary>
+        </member>
+        <member name="P:Jitter2D.Dynamics.RigidBody.Shape">
+            <summary>
+            The shape the body is using.
+            </summary>
+        </member>
+        <member name="P:Jitter2D.Dynamics.RigidBody.Inertia">
+            <summary>
+            The inertia currently used for this body.
+            </summary>
+        </member>
+        <member name="P:Jitter2D.Dynamics.RigidBody.InverseInertia">
+            <summary>
+            The inverse inertia currently used for this body.
+            </summary>
+        </member>
+        <member name="P:Jitter2D.Dynamics.RigidBody.LinearVelocity">
+            <summary>
+            The velocity of the body.
+            </summary>
+        </member>
+        <member name="P:Jitter2D.Dynamics.RigidBody.AngularVelocity">
+            <summary>
+            The angular velocity of the body.
+            </summary>
+        </member>
+        <member name="P:Jitter2D.Dynamics.RigidBody.Position">
+            <summary>
+            The current position of the body.
+            </summary>
+        </member>
+        <member name="P:Jitter2D.Dynamics.RigidBody.Orientation">
+            <summary>
+            The current orientation of the body.
+            </summary>
+        </member>
+        <member name="P:Jitter2D.Dynamics.RigidBody.IsStatic">
+            <summary>
+            If set to true the body can't be moved.
+            </summary>
+        </member>
+        <member name="P:Jitter2D.Dynamics.RigidBody.Mass">
+            <summary>
+            Setting the mass automatically scales the inertia.
+            To set the mass independently from the mass use SetMassProperties.
+            </summary>
+        </member>
+        <member name="M:Jitter2D.Dynamics.RigidBody.Update">
+            <summary>
+            Recalculates the axis aligned bounding box and the inertia
+            values in world space.
+            </summary>
+        </member>
+        <member name="T:Jitter2D.IDebugDrawer">
+            <summary>
+            Interface for providing the possibility to get drawable debug information
+            from an object.
+            </summary>
+        </member>
+        <member name="T:Jitter2D.LinearMath.JMatrix">
+            <summary>
+            3x3 Matrix. Member of the math namespace, so every method
+            has it's 'by reference' equivalent to speed up time critical
+            math operations.
+            </summary>
+        </member>
+        <member name="F:Jitter2D.LinearMath.JMatrix.M11">
+            <summary>
+            M11
+            </summary>
+        </member>
+        <member name="F:Jitter2D.LinearMath.JMatrix.M12">
+            <summary>
+            M12
+            </summary>
+        </member>
+        <member name="F:Jitter2D.LinearMath.JMatrix.M21">
+            <summary>
+            M21
+            </summary>
+        </member>
+        <member name="F:Jitter2D.LinearMath.JMatrix.M22">
+            <summary>
+            M22
+            </summary>
+        </member>
+        <member name="F:Jitter2D.LinearMath.JMatrix.Identity">
+            <summary>
+            Identity matrix.
+            </summary>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JMatrix.#ctor(System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+            Initializes a new instance of the matrix structure.
+            </summary>
+            <param name="m11">m11</param>
+            <param name="m12">m12</param>
+            <param name="m21">m21</param>
+            <param name="m22">m22</param>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JMatrix.Multiply(Jitter2D.LinearMath.JMatrix,Jitter2D.LinearMath.JMatrix)">
+            <summary>
+            Multiply two matrices. Notice: matrix multiplication is not commutative.
+            </summary>
+            <param name="matrix1">The first matrix.</param>
+            <param name="matrix2">The second matrix.</param>
+            <returns>The product of both matrices.</returns>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JMatrix.Multiply(Jitter2D.LinearMath.JMatrix@,Jitter2D.LinearMath.JMatrix@,Jitter2D.LinearMath.JMatrix@)">
+            <summary>
+            Multiply two matrices. Notice: matrix multiplication is not commutative.
+            </summary>
+            <param name="matrix1">The first matrix.</param>
+            <param name="matrix2">The second matrix.</param>
+            <param name="result">The product of both matrices.</param>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JMatrix.Add(Jitter2D.LinearMath.JMatrix,Jitter2D.LinearMath.JMatrix)">
+            <summary>
+            Matrices are added.
+            </summary>
+            <param name="matrix1">The first matrix.</param>
+            <param name="matrix2">The second matrix.</param>
+            <returns>The sum of both matrices.</returns>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JMatrix.Add(Jitter2D.LinearMath.JMatrix@,Jitter2D.LinearMath.JMatrix@,Jitter2D.LinearMath.JMatrix@)">
+            <summary>
+            Matrices are added.
+            </summary>
+            <param name="matrix1">The first matrix.</param>
+            <param name="matrix2">The second matrix.</param>
+            <param name="result">The sum of both matrices.</param>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JMatrix.Inverse(Jitter2D.LinearMath.JMatrix)">
+            <summary>
+            Calculates the inverse of a give matrix.
+            </summary>
+            <param name="matrix">The matrix to invert.</param>
+            <returns>The inverted JMatrix.</returns>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JMatrix.Inverse(Jitter2D.LinearMath.JMatrix@,Jitter2D.LinearMath.JMatrix@)">
+            <summary>
+            Calculates the inverse of a give matrix.
+            </summary>
+            <param name="matrix">The matrix to invert.</param>
+            <param name="result">The inverted JMatrix.</param>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JMatrix.Multiply(Jitter2D.LinearMath.JMatrix,System.Single)">
+            <summary>
+            Multiply a matrix by a scalefactor.
+            </summary>
+            <param name="matrix1">The matrix.</param>
+            <param name="scaleFactor">The scale factor.</param>
+            <returns>A JMatrix multiplied by the scale factor.</returns>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JMatrix.Multiply(Jitter2D.LinearMath.JMatrix@,System.Single,Jitter2D.LinearMath.JMatrix@)">
+            <summary>
+            Multiply a matrix by a scalefactor.
+            </summary>
+            <param name="matrix1">The matrix.</param>
+            <param name="scaleFactor">The scale factor.</param>
+            <param name="result">A JMatrix multiplied by the scale factor.</param>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JMatrix.Transpose(Jitter2D.LinearMath.JMatrix)">
+            <summary>
+            Creates the transposed matrix.
+            </summary>
+            <param name="matrix">The matrix which should be transposed.</param>
+            <returns>The transposed JMatrix.</returns>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JMatrix.Transpose(Jitter2D.LinearMath.JMatrix@,Jitter2D.LinearMath.JMatrix@)">
+            <summary>
+            Creates the transposed matrix.
+            </summary>
+            <param name="matrix">The matrix which should be transposed.</param>
+            <param name="result">The transposed JMatrix.</param>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JMatrix.op_Multiply(Jitter2D.LinearMath.JMatrix,Jitter2D.LinearMath.JMatrix)">
+            <summary>
+            Multiplies two matrices.
+            </summary>
+            <param name="value1">The first matrix.</param>
+            <param name="value2">The second matrix.</param>
+            <returns>The product of both values.</returns>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JMatrix.op_Addition(Jitter2D.LinearMath.JMatrix,Jitter2D.LinearMath.JMatrix)">
+            <summary>
+            Adds two matrices.
+            </summary>
+            <param name="value1">The first matrix.</param>
+            <param name="value2">The second matrix.</param>
+            <returns>The sum of both values.</returns>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JMatrix.op_Subtraction(Jitter2D.LinearMath.JMatrix,Jitter2D.LinearMath.JMatrix)">
+            <summary>
+            Subtracts two matrices.
+            </summary>
+            <param name="value1">The first matrix.</param>
+            <param name="value2">The second matrix.</param>
+            <returns>The difference of both values.</returns>
+        </member>
+        <member name="T:Jitter2D.LinearMath.JBBox">
+            <summary>
+            Bounding Box defined through min and max vectors. Member
+            of the math namespace, so every method has it's 'by reference'
+            equivalent to speed up time critical math operations.
+            </summary>
+        </member>
+        <member name="T:Jitter2D.LinearMath.JBBox.ContainmentType">
+            <summary>
+            Containment type used within the <see cref="T:Jitter2D.LinearMath.JBBox"/> structure.
+            </summary>
+        </member>
+        <member name="F:Jitter2D.LinearMath.JBBox.ContainmentType.Disjoint">
+            <summary>
+            The objects don't intersect.
+            </summary>
+        </member>
+        <member name="F:Jitter2D.LinearMath.JBBox.ContainmentType.Contains">
+            <summary>
+            One object is within the other.
+            </summary>
+        </member>
+        <member name="F:Jitter2D.LinearMath.JBBox.ContainmentType.Intersects">
+            <summary>
+            The two objects intersect.
+            </summary>
+        </member>
+        <member name="F:Jitter2D.LinearMath.JBBox.Min">
+            <summary>
+            The maximum point of the box.
+            </summary>
+        </member>
+        <member name="F:Jitter2D.LinearMath.JBBox.Max">
+            <summary>
+            The minimum point of the box.
+            </summary>
+        </member>
+        <member name="F:Jitter2D.LinearMath.JBBox.LargeBox">
+            <summary>
+            Returns the largest box possible.
+            </summary>
+        </member>
+        <member name="F:Jitter2D.LinearMath.JBBox.SmallBox">
+            <summary>
+            Returns the smalltest box possible.
+            </summary>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JBBox.#ctor(Jitter2D.LinearMath.JVector,Jitter2D.LinearMath.JVector)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="min">The minimum point of the box.</param>
+            <param name="max">The maximum point of the box.</param>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JBBox.InverseTransform(Jitter2D.LinearMath.JVector@,Jitter2D.LinearMath.JMatrix@)">
+            <summary>
+            Transforms the bounding box into the space given by orientation and position.
+            </summary>
+            <param name="position"></param>
+            <param name="orientation"></param>
+            <param name="result"></param>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JBBox.Intersect1D(System.Single,System.Single,System.Single,System.Single,System.Single@,System.Single@)">
+            <summary>
+            Checks whether a point is inside, outside or intersecting
+            a point.
+            </summary>
+            <returns>The ContainmentType of the point.</returns>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JBBox.Contains(Jitter2D.LinearMath.JVector)">
+            <summary>
+            Checks wether a point is within a box or not.
+            </summary>
+            <param name="point"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JBBox.Contains(Jitter2D.LinearMath.JVector@)">
+            <summary>
+            Checks whether a point is inside, outside or intersecting
+            a point.
+            </summary>
+            <param name="point">A point in space.</param>
+            <returns>The ContainmentType of the point.</returns>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JBBox.GetCorners(Jitter2D.LinearMath.JVector[])">
+            <summary>
+            Retrieves the 4 corners of the box.
+            </summary>
+            <returns>An array of 4 JVector entries.</returns>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JBBox.CreateFromPoints(Jitter2D.LinearMath.JVector[])">
+            <summary>
+            Expands a bounding box with the volume 0 by all points
+            given.
+            </summary>
+            <param name="points">A array of JVector.</param>
+            <returns>The resulting bounding box containing all points.</returns>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JBBox.Contains(Jitter2D.LinearMath.JBBox)">
+            <summary>
+            Checks whether another bounding box is inside, outside or intersecting
+            this box. 
+            </summary>
+            <param name="box">The other bounding box to check.</param>
+            <returns>The ContainmentType of the box.</returns>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JBBox.Contains(Jitter2D.LinearMath.JBBox@)">
+            <summary>
+            Checks whether another bounding box is inside, outside or intersecting
+            this box. 
+            </summary>
+            <param name="box">The other bounding box to check.</param>
+            <returns>The ContainmentType of the box.</returns>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JBBox.CreateMerged(Jitter2D.LinearMath.JBBox,Jitter2D.LinearMath.JBBox)">
+            <summary>
+            Creates a new box containing the two given ones.
+            </summary>
+            <param name="original">First box.</param>
+            <param name="additional">Second box.</param>
+            <returns>A JBBox containing the two given boxes.</returns>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JBBox.CreateMerged(Jitter2D.LinearMath.JBBox@,Jitter2D.LinearMath.JBBox@,Jitter2D.LinearMath.JBBox@)">
+            <summary>
+            Creates a new box containing the two given ones.
+            </summary>
+            <param name="original">First box.</param>
+            <param name="additional">Second box.</param>
+            <param name="result">A JBBox containing the two given boxes.</param>
+        </member>
+        <member name="T:Jitter2D.LinearMath.JMath">
+            <summary>
+            Contains some math operations used within Jitter.
+            </summary>
+        </member>
+        <member name="F:Jitter2D.LinearMath.JMath.Pi">
+            <summary>
+            PI.
+            </summary>
+        </member>
+        <member name="F:Jitter2D.LinearMath.JMath.Epsilon">
+            <summary>
+            A small value often used to decide if numeric 
+            results are zero.
+            </summary>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JMath.Sqrt(System.Single)">
+            <summary>
+            Gets the square root.
+            </summary>
+            <param name="number">The number to get the square root from.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JMath.Max(System.Single,System.Single)">
+            <summary>
+            Gets the maximum number of two values.
+            </summary>
+            <param name="val1">The first value.</param>
+            <param name="val2">The second value.</param>
+            <returns>Returns the largest value.</returns>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JMath.Min(System.Single,System.Single)">
+            <summary>
+            Gets the minimum number of two values.
+            </summary>
+            <param name="val1">The first value.</param>
+            <param name="val2">The second value.</param>
+            <returns>Returns the smallest value.</returns>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JMath.Max(System.Single,System.Single,System.Single)">
+            <summary>
+            Gets the maximum number of three values.
+            </summary>
+            <param name="val1">The first value.</param>
+            <param name="val2">The second value.</param>
+            <param name="val3">The third value.</param>
+            <returns>Returns the largest value.</returns>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JMath.Clamp(System.Single,System.Single,System.Single)">
+            <summary>
+            Returns a number which is within [min,max]
+            </summary>
+            <param name="value">The value to clamp.</param>
+            <param name="min">The minimum value.</param>
+            <param name="max">The maximum value.</param>
+            <returns>The clamped value.</returns>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JMath.Absolute(Jitter2D.LinearMath.JMatrix@,Jitter2D.LinearMath.JMatrix@)">
+            <summary>
+            Changes every sign of the matrix entry to '+'
+            </summary>
+            <param name="matrix">The matrix.</param>
+            <param name="result">The absolute matrix.</param>
+        </member>
+        <member name="T:Jitter2D.LinearMath.JVector">
+            <summary>
+            A vector structure. Member of the math 
+            namespace, so every method has it's 'by reference' equivalent
+            to speed up time critical math operations.
+            </summary>
+        </member>
+        <member name="F:Jitter2D.LinearMath.JVector.X">
+            <summary>The X component of the vector.</summary>
+        </member>
+        <member name="F:Jitter2D.LinearMath.JVector.Y">
+            <summary>The Y component of the vector.</summary>
+        </member>
+        <member name="F:Jitter2D.LinearMath.JVector.Zero">
+            <summary>
+            A vector with components (0,0);
+            </summary>
+        </member>
+        <member name="F:Jitter2D.LinearMath.JVector.Left">
+            <summary>
+            A vector with components (1,0);
+            </summary>
+        </member>
+        <member name="F:Jitter2D.LinearMath.JVector.Right">
+            <summary>
+            A vector with components (-1,0);
+            </summary>
+        </member>
+        <member name="F:Jitter2D.LinearMath.JVector.Up">
+            <summary>
+            A vector with components (0,1);
+            </summary>
+        </member>
+        <member name="F:Jitter2D.LinearMath.JVector.Down">
+            <summary>
+            A vector with components (0,-1);
+            </summary>
+        </member>
+        <member name="F:Jitter2D.LinearMath.JVector.One">
+            <summary>
+            A vector with components (1,1);
+            </summary>
+        </member>
+        <member name="F:Jitter2D.LinearMath.JVector.MinValue">
+            <summary>
+            A vector with components 
+            (float.MinValue,float.MinValue);
+            </summary>
+        </member>
+        <member name="F:Jitter2D.LinearMath.JVector.MaxValue">
+            <summary>
+            A vector with components 
+            (float.MaxValue,float.MaxValue);
+            </summary>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JVector.#ctor(System.Single,System.Single)">
+            <summary>
+            Constructor initializing a new instance of the structure
+            </summary>
+            <param name="x">The X component of the vector.</param>
+            <param name="y">The Y component of the vector.</param>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JVector.Set(System.Single,System.Single)">
+            <summary>
+            Sets all vector component to specific values.
+            </summary>
+            <param name="x">The X component of the vector.</param>
+            <param name="y">The Y component of the vector.</param>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JVector.#ctor(System.Single)">
+            <summary>
+            Constructor initializing a new instance of the structure
+            </summary>
+            <param name="xy">All components of the vector are set to xy</param>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JVector.ToString">
+            <summary>
+            Builds a string from the JVector.
+            </summary>
+            <returns>A string containing all three components.</returns>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JVector.Equals(System.Object)">
+            <summary>
+            Tests if an object is equal to this vector.
+            </summary>
+            <param name="obj">The object to test.</param>
+            <returns>Returns true if they are euqal, otherwise false.</returns>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JVector.op_Equality(Jitter2D.LinearMath.JVector,Jitter2D.LinearMath.JVector)">
+            <summary>
+            Tests if two JVector are equal.
+            </summary>
+            <param name="value1">The first value.</param>
+            <param name="value2">The second value.</param>
+            <returns>Returns true if both values are equal, otherwise false.</returns>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JVector.op_Inequality(Jitter2D.LinearMath.JVector,Jitter2D.LinearMath.JVector)">
+            <summary>
+            Tests if two JVector are not equal.
+            </summary>
+            <param name="value1">The first value.</param>
+            <param name="value2">The second value.</param>
+            <returns>Returns false if both values are equal, otherwise true.</returns>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JVector.Min(Jitter2D.LinearMath.JVector,Jitter2D.LinearMath.JVector)">
+            <summary>
+            Gets a vector with the minimum x and y values of both vectors.
+            </summary>
+            <param name="value1">The first value.</param>
+            <param name="value2">The second value.</param>
+            <returns>A vector with the minimum x and y values of both vectors.</returns>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JVector.Min(Jitter2D.LinearMath.JVector@,Jitter2D.LinearMath.JVector@,Jitter2D.LinearMath.JVector@)">
+            <summary>
+             Sets a vector with the minimum x and y values of both vectors.
+            </summary>
+            <param name="value1">The first value.</param>
+            <param name="value2">The second value.</param>
+            <param name="result">A vector with the minimum x and y values of both vectors.</param>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JVector.Max(Jitter2D.LinearMath.JVector,Jitter2D.LinearMath.JVector)">
+            <summary>
+            Gets a vector with the maximum x and y values of both vectors.
+            </summary>
+            <param name="value1">The first value.</param>
+            <param name="value2">The second value.</param>
+            <returns>A vector with the maximum x and y values of both vectors.</returns>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JVector.Max(Jitter2D.LinearMath.JVector@,Jitter2D.LinearMath.JVector@,Jitter2D.LinearMath.JVector@)">
+            <summary>
+            Gets a vector with the maximum x and y values of both vectors.
+            </summary>
+            <param name="value1">The first value.</param>
+            <param name="value2">The second value.</param>
+            <param name="result">A vector with the maximum x and y values of both vectors.</param>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JVector.MakeZero">
+            <summary>
+            Sets the length of the vector to zero.
+            </summary>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JVector.IsZero">
+            <summary>
+            Checks if the length of the vector is zero.
+            </summary>
+            <returns>Returns true if the vector is zero, otherwise false.</returns>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JVector.IsNearlyZero">
+            <summary>
+            Checks if the length of the vector is nearly zero.
+            </summary>
+            <returns>Returns true if the vector is nearly zero, otherwise false.</returns>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JVector.Transform(Jitter2D.LinearMath.JVector,Jitter2D.LinearMath.JMatrix)">
+            <summary>
+            Transforms a vector by the given matrix.
+            </summary>
+            <param name="position">The vector to transform.</param>
+            <param name="matrix">The transform matrix.</param>
+            <returns>The transformed vector.</returns>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JVector.Transform(Jitter2D.LinearMath.JVector@,Jitter2D.LinearMath.JMatrix@,Jitter2D.LinearMath.JVector@)">
+            <summary>
+            Transforms a vector by the given matrix.
+            </summary>
+            <param name="position">The vector to transform.</param>
+            <param name="matrix">The transform matrix.</param>
+            <param name="result">The transformed vector.</param>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JVector.TransposedTransform(Jitter2D.LinearMath.JVector,Jitter2D.LinearMath.JMatrix)">
+            <summary>
+            Transforms a vector by the transposed of the given Matrix.
+            </summary>
+            <param name="position">The vector to transform.</param>
+            <param name="matrix">The transform matrix.</param>
+            <param name="result">The transformed vector.</param>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JVector.TransposedTransform(Jitter2D.LinearMath.JVector@,Jitter2D.LinearMath.JMatrix@,Jitter2D.LinearMath.JVector@)">
+            <summary>
+            Transforms a vector by the transposed of the given Matrix.
+            </summary>
+            <param name="position">The vector to transform.</param>
+            <param name="matrix">The transform matrix.</param>
+            <param name="result">The transformed vector.</param>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JVector.Dot(Jitter2D.LinearMath.JVector,Jitter2D.LinearMath.JVector)">
+            <summary>
+            Calculates the dot product of two vectors.
+            </summary>
+            <param name="vector1">The first vector.</param>
+            <param name="vector2">The second vector.</param>
+            <returns>Returns the dot product of both vectors.</returns>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JVector.Dot(Jitter2D.LinearMath.JVector@,Jitter2D.LinearMath.JVector@)">
+            <summary>
+            Calculates the dot product of both vectors.
+            </summary>
+            <param name="vector1">The first vector.</param>
+            <param name="vector2">The second vector.</param>
+            <returns>Returns the dot product of both vectors.</returns>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JVector.Add(Jitter2D.LinearMath.JVector,Jitter2D.LinearMath.JVector)">
+            <summary>
+            Adds two vectors.
+            </summary>
+            <param name="value1">The first vector.</param>
+            <param name="value2">The second vector.</param>
+            <returns>The sum of both vectors.</returns>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JVector.Add(Jitter2D.LinearMath.JVector@,Jitter2D.LinearMath.JVector@,Jitter2D.LinearMath.JVector@)">
+            <summary>
+            Adds to vectors.
+            </summary>
+            <param name="value1">The first vector.</param>
+            <param name="value2">The second vector.</param>
+            <param name="result">The sum of both vectors.</param>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JVector.Subtract(Jitter2D.LinearMath.JVector,Jitter2D.LinearMath.JVector)">
+            <summary>
+            Subtracts two vectors.
+            </summary>
+            <param name="value1">The first vector.</param>
+            <param name="value2">The second vector.</param>
+            <returns>The difference of both vectors.</returns>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JVector.Subtract(Jitter2D.LinearMath.JVector@,Jitter2D.LinearMath.JVector@,Jitter2D.LinearMath.JVector@)">
+            <summary>
+            Subtracts to vectors.
+            </summary>
+            <param name="value1">The first vector.</param>
+            <param name="value2">The second vector.</param>
+            <param name="result">The difference of both vectors.</param>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JVector.Cross(Jitter2D.LinearMath.JVector,Jitter2D.LinearMath.JVector)">
+            <summary>
+            The cross product of two vectors.
+            </summary>
+            <param name="vector1">The first vector.</param>
+            <param name="vector2">The second vector.</param>
+            <returns>The cross product of both vectors.</returns>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JVector.Cross(Jitter2D.LinearMath.JVector@,Jitter2D.LinearMath.JVector@,System.Single@)">
+            <summary>
+            The cross product of two vectors.
+            </summary>
+            <param name="vector1">The first vector.</param>
+            <param name="vector2">The second vector.</param>
+            <param name="result">The cross product of both vectors.</param>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JVector.GetHashCode">
+            <summary>
+            Gets the hashcode of the vector.
+            </summary>
+            <returns>Returns the hashcode of the vector.</returns>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JVector.Negate">
+            <summary>
+            Inverses the direction of the vector.
+            </summary>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JVector.Negate(Jitter2D.LinearMath.JVector)">
+            <summary>
+            Inverses the direction of a vector.
+            </summary>
+            <param name="value">The vector to inverse.</param>
+            <returns>The negated vector.</returns>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JVector.Negate(Jitter2D.LinearMath.JVector@,Jitter2D.LinearMath.JVector@)">
+            <summary>
+            Inverses the direction of a vector.
+            </summary>
+            <param name="value">The vector to inverse.</param>
+            <param name="result">The negated vector.</param>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JVector.Normalize(Jitter2D.LinearMath.JVector)">
+            <summary>
+            Normalizes the given vector.
+            </summary>
+            <param name="value">The vector which should be normalized.</param>
+            <returns>A normalized vector.</returns>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JVector.Normalize">
+            <summary>
+            Normalizes this vector.
+            </summary>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JVector.Normalize(Jitter2D.LinearMath.JVector@,Jitter2D.LinearMath.JVector@)">
+            <summary>
+            Normalizes the given vector.
+            </summary>
+            <param name="value">The vector which should be normalized.</param>
+            <param name="result">A normalized vector.</param>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JVector.LengthSquared">
+            <summary>
+            Gets the squared length of the vector.
+            </summary>
+            <returns>Returns the squared length of the vector.</returns>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JVector.Length">
+            <summary>
+            Gets the length of the vector.
+            </summary>
+            <returns>Returns the length of the vector.</returns>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JVector.Swap(Jitter2D.LinearMath.JVector@,Jitter2D.LinearMath.JVector@)">
+            <summary>
+            Swaps the components of both vectors.
+            </summary>
+            <param name="vector1">The first vector to swap with the second.</param>
+            <param name="vector2">The second vector to swap with the first.</param>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JVector.Multiply(Jitter2D.LinearMath.JVector,System.Single)">
+            <summary>
+            Multiply a vector with a factor.
+            </summary>
+            <param name="value1">The vector to multiply.</param>
+            <param name="scaleFactor">The scale factor.</param>
+            <returns>Returns the multiplied vector.</returns>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JVector.Multiply(Jitter2D.LinearMath.JVector@,System.Single,Jitter2D.LinearMath.JVector@)">
+            <summary>
+            Multiply a vector with a factor.
+            </summary>
+            <param name="value1">The vector to multiply.</param>
+            <param name="scaleFactor">The scale factor.</param>
+            <param name="result">Returns the multiplied vector.</param>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JVector.op_Modulus(Jitter2D.LinearMath.JVector,Jitter2D.LinearMath.JVector)">
+            <summary>
+            Calculates the cross product of two vectors.
+            </summary>
+            <param name="value1">The first vector.</param>
+            <param name="value2">The second vector.</param>
+            <returns>Returns the cross product of both.</returns>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JVector.op_Multiply(Jitter2D.LinearMath.JVector,Jitter2D.LinearMath.JVector)">
+            <summary>
+            Calculates the dot product of two vectors.
+            </summary>
+            <param name="value1">The first vector.</param>
+            <param name="value2">The second vector.</param>
+            <returns>Returns the dot product of both.</returns>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JVector.op_Multiply(Jitter2D.LinearMath.JVector,System.Single)">
+            <summary>
+            Multiplies a vector by a scale factor.
+            </summary>
+            <param name="value1">The vector to scale.</param>
+            <param name="value2">The scale factor.</param>
+            <returns>Returns the scaled vector.</returns>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JVector.op_Multiply(System.Single,Jitter2D.LinearMath.JVector)">
+            <summary>
+            Multiplies a vector by a scale factor.
+            </summary>
+            <param name="value2">The vector to scale.</param>
+            <param name="value1">The scale factor.</param>
+            <returns>Returns the scaled vector.</returns>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JVector.op_Subtraction(Jitter2D.LinearMath.JVector,Jitter2D.LinearMath.JVector)">
+            <summary>
+            Subtracts two vectors.
+            </summary>
+            <param name="value1">The first vector.</param>
+            <param name="value2">The second vector.</param>
+            <returns>The difference of both vectors.</returns>
+        </member>
+        <member name="M:Jitter2D.LinearMath.JVector.op_Addition(Jitter2D.LinearMath.JVector,Jitter2D.LinearMath.JVector)">
+            <summary>
+            Adds two vectors.
+            </summary>
+            <param name="value1">The first vector.</param>
+            <param name="value2">The second vector.</param>
+            <returns>The sum of both vectors.</returns>
+        </member>
+        <member name="T:Jitter2D.ResourcePool`1">
+            <summary>
+            A thread safe resource pool.
+            </summary>
+            <typeparam name="T">The type of the object to cache. The type T must
+            have a parameterless constructor.</typeparam>
+        </member>
+        <member name="M:Jitter2D.ResourcePool`1.#ctor">
+            <summary>
+            Creates a new instance of the ResourcePool class.
+            </summary>
+        </member>
+        <member name="M:Jitter2D.ResourcePool`1.ResetResourcePool">
+            <summary>
+            Removes all cached resources.
+            So they can get garbage collected.
+            </summary>
+        </member>
+        <member name="M:Jitter2D.ResourcePool`1.GiveBack(`0)">
+            <summary>
+            Gives a resource back to the pool.
+            </summary>
+            <param name="obj">The resource to give back</param>
+        </member>
+        <member name="M:Jitter2D.ResourcePool`1.GetNew">
+            <summary>
+            Get a free resource.
+            </summary>
+            <returns>The free resource.</returns>
+        </member>
+        <member name="T:Jitter2D.ArrayResourcePool`1">
+            <summary>
+            A thread safe resource pool.
+            </summary>
+            <typeparam name="T">The type of the array of objects to cache. The type T must
+            have a parameterless constructor.  Do not specify [].</typeparam>
+        </member>
+        <member name="F:Jitter2D.ArrayResourcePool`1.arrayLength">
+            <summary>
+            The length of each array object to be created in the pool.
+            </summary>
+        </member>
+        <member name="M:Jitter2D.ArrayResourcePool`1.#ctor(System.Int32)">
+            <summary>
+            Creates a new instance of the ResourcePool class.
+            </summary>
+        </member>
+        <member name="M:Jitter2D.ArrayResourcePool`1.ResetResourcePool">
+            <summary>
+            Removes all cached resources.
+            So they can get garbage collected.
+            </summary>
+        </member>
+        <member name="M:Jitter2D.ArrayResourcePool`1.GiveBack(`0[])">
+            <summary>
+            Gives a resource back to the pool.
+            </summary>
+            <param name="obj">The resource to give back</param>
+        </member>
+        <member name="M:Jitter2D.ArrayResourcePool`1.GetNew">
+            <summary>
+            Get a free resource.
+            </summary>
+            <returns>The free resource.</returns>
+        </member>
+        <member name="T:Jitter2D.ThreadManager">
+            <summary>
+            Jitters ThreadManager class handles the internal multithreading of the
+            engine.
+            </summary>
+        </member>
+        <member name="P:Jitter2D.ThreadManager.ThreadCount">
+            <summary>
+            Get the number of threads used by the ThreadManager to execute
+            tasks.
+            </summary>
+        </member>
+        <member name="M:Jitter2D.ThreadManager.Execute">
+            <summary>
+            Executes all tasks previously added to the ThreadManager.
+            The method finishes when all tasks are complete.
+            </summary>
+        </member>
+        <member name="M:Jitter2D.ThreadManager.AddTask(System.Action{System.Object},System.Object)">
+            <summary>
+            Adds a task to the ThreadManager. The task and the parameter
+            is added to an internal list. Call <see cref="M:Jitter2D.ThreadManager.Execute"/>
+            to execute and remove the tasks from the internal list.
+            </summary>
+            <param name="task"></param>
+            <param name="param"></param>
+        </member>
+        <member name="T:Jitter2D.World">
+            <summary>
+            This class brings 'dynamics' and 'collisions' together. It handles
+            all bodies and constraints.
+            </summary>
+        </member>
+        <member name="P:Jitter2D.World.ArbiterMap">
+            <summary>
+            Holds a list of <see cref="T:Jitter2D.Dynamics.Arbiter"/>. All currently
+            active arbiter in the <see cref="T:Jitter2D.World"/> are stored in this map.
+            </summary>
+        </member>
+        <member name="P:Jitter2D.World.Islands">
+            <summary>
+            Gets a read only collection of the <see cref="!:Jitter.Collision.CollisionIsland"/> objects managed by
+            this class.
+            </summary>
+        </member>
+        <member name="M:Jitter2D.World.#ctor(Jitter2D.Collision.CollisionSystem)">
+            <summary>
+            Create a new instance of the <see cref="T:Jitter2D.World"/> class.
+            </summary>
+            <param name="collision">The collisionSystem which is used to detect
+            collisions. See for example: <see cref="!:CollisionSystemSAP"/>
+            or <see cref="!:CollisionSystemBrute"/>.
+            </param>
+        </member>
+        <member name="P:Jitter2D.World.CollisionSystem">
+            <summary>
+            Gets the <see cref="P:Jitter2D.World.CollisionSystem"/> used
+            to detect collisions.
+            </summary>
+        </member>
+        <member name="M:Jitter2D.World.ResetResourcePools">
+            <summary>
+            In Jitter many objects get added to stacks after they were used.
+            If a new object is needed the old object gets removed from the stack
+            and is reused. This saves some time and also garbage collections.
+            Calling this method removes all cached objects from all
+            stacks.
+            </summary>
+        </member>
+        <member name="M:Jitter2D.World.Clear">
+            <summary>
+            Removes all objects from the world and removes all memory cached objects.
+            </summary>
+        </member>
+        <member name="P:Jitter2D.World.Gravity">
+            <summary>
+            Gets or sets the gravity in this <see cref="T:Jitter2D.World"/>. The default gravity
+            is (0,-9.81)
+            </summary>
+        </member>
+        <member name="P:Jitter2D.World.AllowDeactivation">
+            <summary>
+            Global sets or gets if a body is able to be temporarily deactivated by the engine to
+            safe computation time. Use <see cref="M:Jitter2D.World.SetInactivityThreshold(System.Single,System.Single,System.Single)"/> to set parameters
+            of the deactivation process.
+            </summary>
+        </member>
+        <member name="M:Jitter2D.World.SetDampingFactors(System.Single,System.Single)">
+            <summary>
+            Every computation <see cref="M:Jitter2D.World.Step(System.Single,System.Boolean)"/> the angular and linear velocity 
+            of a <see cref="T:Jitter2D.Dynamics.RigidBody"/> gets multiplied by this value.
+            </summary>
+            <param name="angularDamping">The factor multiplied with the angular velocity.
+            The default value is 0.85.</param>
+            <param name="linearDamping">The factor multiplied with the linear velocity.
+            The default value is 0.85</param>
+        </member>
+        <member name="M:Jitter2D.World.SetInactivityThreshold(System.Single,System.Single,System.Single)">
+            <summary>
+            Sets parameters for the <see cref="T:Jitter2D.Dynamics.RigidBody"/> deactivation process.
+            If the bodies angular velocity is less than the angular velocity threshold
+            and its linear velocity is lower then the linear velocity threshold for a 
+            specific time the body gets deactivated. A body can be reactivated by setting
+            <see cref="P:Jitter2D.Dynamics.RigidBody.IsActive"/> to true. A body gets also automatically
+            reactivated if another moving object hits it or the <see cref="T:Jitter2D.Collision.CollisionIsland"/>
+            the object is in gets activated.
+            </summary>
+            <param name="angularVelocity">The threshold value for the angular velocity. The default value
+            is 0.1.</param>
+            <param name="linearVelocity">The threshold value for the linear velocity. The default value
+            is 0.1</param>
+            <param name="time">The threshold value for the time in seconds. The default value is 2.</param>
+        </member>
+        <member name="M:Jitter2D.World.SetIterations(System.Int32,System.Int32)">
+            <summary>
+            Jitter uses an iterativ approach to solve collisions and contacts. You can set the number of
+            iterations Jitter should do. In general the more iterations the more stable a simulation gets
+            but also costs computation time.
+            </summary>
+            <param name="iterations">The number of contact iterations. Default value 10.</param>
+            <param name="smallIterations">The number of contact iteration used for smaller (two and three constraint) systems. Default value 4.</param>
+            <remarks>The number of iterations for collision and contact should be between 3 - 30.
+            More iterations means more stability and also a longer calculation time.</remarks>
+        </member>
+        <member name="M:Jitter2D.World.RemoveBody(Jitter2D.Dynamics.RigidBody)">
+            <summary>
+            Removes a <see cref="T:Jitter2D.Dynamics.RigidBody"/> from the world.
+            </summary>
+            <param name="body">The body which should be removed.</param>
+            <returns>Returns false if the body could not be removed from the world.</returns>
+        </member>
+        <member name="M:Jitter2D.World.AddBody(Jitter2D.Dynamics.RigidBody)">
+            <summary>
+            Adds a <see cref="T:Jitter2D.Dynamics.RigidBody"/> to the world.
+            </summary>
+            <param name="body">The body which should be added.</param>
+        </member>
+        <member name="M:Jitter2D.World.AddSpring(Jitter2D.Dynamics.Springs.Spring)">
+            <summary>
+            Adds a <see cref="T:Jitter2D.Dynamics.RigidBody"/> to the world.
+            </summary>
+            <param name="body">The body which should be added.</param>
+        </member>
+        <member name="M:Jitter2D.World.RemoveSpring(Jitter2D.Dynamics.Springs.Spring)">
+            <summary>
+            Removes a <see cref="T:Jitter2D.Dynamics.RigidBody"/> from the world.
+            </summary>
+            <param name="body">The body which should be removed.</param>
+            <returns>Returns false if the body could not be removed from the world.</returns>
+        </member>
+        <member name="M:Jitter2D.World.RemoveConstraint(Jitter2D.Dynamics.Constraints.Constraint)">
+            <summary>
+            Add a <see cref="T:Jitter2D.Dynamics.Constraints.Constraint"/> to the world. Fast, O(1).
+            </summary>
+            <param name="constraint">The constraint which should be added.</param>
+            <returns>True if the constraint was successfully removed.</returns>
+        </member>
+        <member name="M:Jitter2D.World.AddConstraint(Jitter2D.Dynamics.Constraints.Constraint)">
+            <summary>
+            Add a <see cref="T:Jitter2D.Dynamics.Constraints.Constraint"/> to the world.  Fast, O(1).
+            </summary>
+            <param name="constraint">The constraint which should be removed.</param>
+        </member>
+        <member name="F:Jitter2D.World.debugTimes">
+            <summary>
+            Time in ms for every part of the <see cref="M:Jitter2D.World.Step(System.Single,System.Boolean)"/> method.
+            </summary>
+            <example>int time = DebugTimes[(int)DebugType.CollisionDetect] gives
+            the amount of time spent on collision detection during the last <see cref="M:Jitter2D.World.Step(System.Single,System.Boolean)"/>.
+            </example>
+        </member>
+        <member name="M:Jitter2D.World.Step(System.Single,System.Boolean)">
+            <summary>
+            Integrates the whole world a timestep further in time.
+            </summary>
+            <param name="timestep">The timestep in seconds. 
+            It should be small as possible to keep the simulation stable.
+            The physics simulation shouldn't run slower than 60fps.
+            (timestep=1/60).</param>
+            <param name="multithread">If true the engine uses several threads to
+            integrate the world. This is faster on multicore CPUs.</param>
+        </member>
+        <member name="M:Jitter2D.World.Step(System.Single,System.Boolean,System.Single,System.Int32)">
+            <summary>
+            Integrates the whole world several fixed timestep further in time.
+            </summary>
+            <param name="totalTime">The time to integrate.</param>
+            <param name="timestep">The timestep in seconds. 
+            It should be small as possible to keep the simulation stable.
+            The physics simulation shouldn't run slower than 60fps.
+            (timestep=1/60).</param>
+            <param name="multithread">If true the engine uses several threads to
+            integrate the world. This is faster on multicore CPUs.</param>
+            <param name="maxSteps">The maximum number of substeps. After that Jitter gives up
+            to keep up with the given totalTime.</param>
+        </member>
+    </members>
+</doc>

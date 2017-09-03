@@ -1,0 +1,10 @@
+C:\Users\LAURENCE\source\repos\ShadowXEngine\ShadowXEngine\bin\Debug\ShadowXEngine.exe.config
+C:\Users\LAURENCE\source\repos\ShadowXEngine\ShadowXEngine\bin\Debug\ShadowXEngine.exe
+C:\Users\LAURENCE\source\repos\ShadowXEngine\ShadowXEngine\bin\Debug\ShadowXEngine.pdb
+C:\Users\LAURENCE\source\repos\ShadowXEngine\ShadowXEngine\obj\Debug\ShadowXEngine.csprojResolveAssemblyReference.cache
+C:\Users\LAURENCE\source\repos\ShadowXEngine\ShadowXEngine\obj\Debug\ShadowXEngine.csproj.CoreCompileInputs.cache
+C:\Users\LAURENCE\source\repos\ShadowXEngine\ShadowXEngine\obj\Debug\ShadowXEngine.exe
+C:\Users\LAURENCE\source\repos\ShadowXEngine\ShadowXEngine\obj\Debug\ShadowXEngine.pdb
+C:\Users\LAURENCE\source\repos\ShadowXEngine\ShadowXEngine\bin\Debug\Jitter2D.dll
+C:\Users\LAURENCE\source\repos\ShadowXEngine\ShadowXEngine\bin\Debug\Jitter2D.pdb
+C:\Users\LAURENCE\source\repos\ShadowXEngine\ShadowXEngine\bin\Debug\Jitter2D.xml
