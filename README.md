@@ -119,8 +119,8 @@ Thats pretty much it. Everything else is left to your creativity. Please remembe
 game objects you will start to see HEAVY frame drop. The engine comes with a SAMPLE game that anyone can see the code and learn from that.
 
 ## Credits
-Kenney (https://kenney.itch.io/) - Art
-ShadowDragon / Laurence - Coder of the entire project and founder of Four Winged Studio
+* Kenney (https://kenney.itch.io/) - Art
+* ShadowDragon / Laurence - Coder of the entire project and founder of Four Winged Studio
 
 ## LICENSE
 You are allowed to use this code for personal use only. All assets used in this project MUST not be sold they are the property of Kenney
